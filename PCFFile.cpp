@@ -166,18 +166,22 @@ i32 PCFFile::weight() const
 	if (name.equals_ignoring_ascii_case("bold"sv))
 		return Gfx::name_to_weight("Bold"sv);
 
-	i32 value = 0;
 	if (m_properties.contains("WEIGHT"sv)) {
-		value = m_properties.get("WEIGHT"sv).value().get<i32>();
+		return m_properties.get("WEIGHT"sv).value().get<i32>();
 	} else {
 		// FIXME: This can be calulated: https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/XLFD/xlfd.html#weight
 		TODO();
 	}
 
 	// Convert X11 weight to Serenity weight.
-	TODO();
+	return relative_weight();
+}
 
-	return value;
+i32 PCFFile::relative_weight() const
+{
+	if (m_properties.contains("RELATIVE_WEIGHT"sv))
+		return m_properties.get("RELATIVE_WEIGHT"sv).value().get<i32>() * 10;
+	return 500;
 }
 
 i32 PCFFile::slope() const

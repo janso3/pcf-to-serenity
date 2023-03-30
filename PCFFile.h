@@ -31,6 +31,7 @@ public:
 	DeprecatedString weight_name() const;
 
 	i32 weight() const;
+	i32 relative_weight() const;
 	i32 slope() const;
 	i32 pixel_size() const;
 	i32 x_height() const;
