@@ -31,6 +31,9 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 	bitmap_font->set_slope(pcf->slope());
 	bitmap_font->set_baseline(pcf->baseline());
 
+	auto filename = TRY(pcf->construct_filename());
+	dbgln("{}", filename);
+
 	// FIXME: Make this less naive.
 	for (int16_t i = 0; i < 5000; ++i) {
 		auto maybe_glyph = pcf->glyph_index_for(i);
@@ -43,9 +46,6 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 		auto bitmap = bitmap_font->raw_glyph(i).glyph_bitmap();
 		TRY(pcf->draw_glyph(pcf_index, bitmap));
 	}
-
-	auto filename = TRY(pcf->construct_filename());
-	dbgln("Writing {}", filename);
 
 	auto set = TRY(bitmap_font->masked_character_set());
 	TRY(set->write_to_file(filename));
