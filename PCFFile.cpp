@@ -119,7 +119,7 @@ ErrorOr<void> PCFFile::draw_glyph(u16 index, Gfx::GlyphBitmap& bitmap) const
 
 u8 PCFFile::baseline() const
 {
-	return m_acc.font_ascent - m_acc.font_descent;
+	return m_acc.font_ascent - 1;
 }
 
 DeprecatedString PCFFile::family() const
@@ -395,6 +395,8 @@ ErrorOr<void> PCFFile::convert_glyphs()
 		glyph.width = w;
 		TRY(glyph.data.try_resize(w * size.height()));
 
+		i16 shift = max(0, baseline() - m_metrics[i].character_ascent + 1);
+
 		for (i32 y = 0; y < h; ++y) {
 			for (i32 x = 0; x < w; ++x) {
 				size_t index = (x / 8) + bytes_per_row * y;
@@ -404,7 +406,7 @@ ErrorOr<void> PCFFile::convert_glyphs()
 					pixel = (byte << (x % 8)) & 0x80;
 				else
 					pixel = (byte >> (x % 8)) & 1;
-				glyph.data[x + y * w] = pixel;
+				glyph.data[x + (y + shift) * w] = pixel;
 			}
 		}
 	}
