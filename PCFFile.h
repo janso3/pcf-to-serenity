@@ -25,6 +25,7 @@ public:
 	ErrorOr<void> draw_glyph(u16 index, Gfx::GlyphBitmap&) const;
 	u8 glyph_width(u16 index) const { return m_glyphs.at(index).width; }
 	u8 baseline() const;
+	size_t highest_codepoint() const;
 
 	DeprecatedString family() const;
 	DeprecatedString name() const;

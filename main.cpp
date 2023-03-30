@@ -22,7 +22,7 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 	auto pcf = TRY(PCFFile::create(buffer));
 
 	auto glyph_size = pcf->glyph_size();
-	auto bitmap_font = TRY(Gfx::BitmapFont::try_create(glyph_size.height(), glyph_size.width(), pcf->is_fixed_width(), pcf->glyph_count()));
+	auto bitmap_font = TRY(Gfx::BitmapFont::try_create(glyph_size.height(), glyph_size.width(), pcf->is_fixed_width(), pcf->highest_codepoint()));
 	bitmap_font->set_family(pcf->family());
 	bitmap_font->set_name(pcf->name());
 	bitmap_font->set_presentation_size(pcf->pixel_size());
@@ -34,8 +34,7 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 	auto filename = TRY(pcf->construct_filename());
 	dbgln("{}", filename);
 
-	// FIXME: Make this less naive.
-	for (int16_t i = 0; i < 5000; ++i) {
+	for (size_t i = 0; i < pcf->highest_codepoint(); ++i) {
 		auto maybe_glyph = pcf->glyph_index_for(i);
 		if (!maybe_glyph.has_value())
 			continue;

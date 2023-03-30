@@ -122,6 +122,11 @@ u8 PCFFile::baseline() const
 	return m_acc.font_ascent - 1;
 }
 
+size_t PCFFile::highest_codepoint() const
+{
+	return m_encoding.indices.size();
+}
+
 DeprecatedString PCFFile::family() const
 {
 	StringBuilder builder;
