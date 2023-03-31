@@ -21,6 +21,11 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 
 	auto pcf = TRY(PCFFile::create(buffer));
 
+	if (pcf->glyph_size().width() > 32 || pcf->glyph_size().height() > 32) {
+		dbgln("At this time, glyphs may only be 32px wide :^(");
+		return -1;
+	}
+
 	auto glyph_size = pcf->glyph_size();
 	auto bitmap_font = TRY(Gfx::BitmapFont::try_create(glyph_size.height(), glyph_size.width(), pcf->is_fixed_width(), pcf->highest_codepoint()));
 	bitmap_font->set_family(pcf->family());
