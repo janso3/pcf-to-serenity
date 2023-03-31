@@ -57,7 +57,7 @@ private:
 
 		// FIXME: Do we have to reverse the bits here?
 		if (!(format & PCF_BIT_MASK))
-			TODO();
+			return value;
 
 		return value;
 	}

@@ -299,10 +299,13 @@ ErrorOr<void> PCFFile::populate_tables()
 		case PCF_METRICS:
 		case PCF_INK_METRICS:
 		{
-			auto metrics_count = TRY(read<i16>(format));
-			VERIFY(metrics_count > 0);
+			u32 metrics_count;
+			if (format & PCF_COMPRESSED_METRICS)
+				metrics_count = TRY(read<u16>(format));
+			else
+				metrics_count = TRY(read<u32>(format));
 
-			for (i16 i = 0; i < metrics_count; ++i) {
+			for (u32 i = 0; i < metrics_count; ++i) {
 				Metrics m;
 
 				auto read_short = [this](i32 format) -> ErrorOr<i16> {
@@ -343,7 +346,7 @@ ErrorOr<void> PCFFile::populate_tables()
 			for (i32 i = 0; i < 4; ++i)
 				m_bitmap_data.bitmap_sizes[i] = TRY(read<i32>(format));
 
-			TRY(m_bitmap_data.data.try_resize(m_bitmap_data.bitmap_sizes[format & 3]));
+			TRY(m_bitmap_data.data.try_resize(m_bitmap_data.bitmap_sizes[format & 3]+1));
 			TRY(m_stream.read_some(m_bitmap_data.data));
 				break;
 		case PCF_BDF_ENCODINGS:
